@@ -4,6 +4,7 @@ local.properties
 keystore.properties
 *.jks
 *.keystore
+.gh_token
 .idea/
 build/
 captures/
@@ -13,3 +14,4 @@ app/build/
 *.apk
 *.aab
 .DS_Store
+tools/
