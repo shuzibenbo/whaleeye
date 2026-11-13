@@ -32,6 +32,7 @@ object UpdateChecker {
         "https://raw.githubusercontent.com/shuzibenbo/whaleeye/main/update.json",
         "https://ghproxy.net/https://raw.githubusercontent.com/shuzibenbo/whaleeye/main/update.json",
         "https://ghfast.top/https://raw.githubusercontent.com/shuzibenbo/whaleeye/main/update.json",
+        "https://github.com/shuzibenbo/whaleeye/releases/latest/download/update.json",
         "https://api.github.com/repos/shuzibenbo/whaleeye/contents/update.json"
     )
 
@@ -46,16 +47,8 @@ object UpdateChecker {
                 }.getOrNull()
             }
         }
-        var found: UpdateInfo? = null
-        for (j in jobs) {
-            val r = runCatching { j.await() }.getOrNull()
-            if (r != null) {
-                found = r
-                break
-            }
-        }
-        jobs.forEach { runCatching { it.cancel() } }
-        found
+        val results = jobs.mapNotNull { runCatching { it.await() }.getOrNull() }
+        results.maxByOrNull { it.versionCode }
     }
 
     private fun parse(body: String): UpdateInfo? = try {

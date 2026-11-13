@@ -256,14 +256,14 @@ fun UpdateScreen() {
                             onClick = { doDownload() },
                             colors = ButtonDefaults.buttonColors(containerColor = UpAccent)
                         ) {
-                            Text("下载 APK", fontSize = 13.sp, color = Color(0xFF12142A))
+                            Text(Lang.s("下载 APK", "Download APK"), fontSize = 13.sp, color = Color(0xFF12142A))
                         }
                     } else {
                         Button(
                             onClick = { doInstall() },
                             colors = ButtonDefaults.buttonColors(containerColor = UpAccent)
                         ) {
-                            Text("安装更新", fontSize = 13.sp, color = Color(0xFF12142A))
+                            Text(Lang.s("安装更新", "Install update"), fontSize = 13.sp, color = Color(0xFF12142A))
                         }
                         Text(
                             apkFile!!.absolutePath,
@@ -285,7 +285,7 @@ fun UpdateScreen() {
             ) {
                 Text("鲸眼 WhaleEye", fontSize = 17.sp, color = UpText)
                 Text(
-                    "一眼看穿你的手机与网络。设备信息、网络与 VPN、WiFi 全景、测速、帧率，一个 App 全看完。",
+                    Lang.s("一眼看穿你的手机与网络。设备信息、网络与 VPN、WiFi 全景、测速、帧率，一个 App 全看完。", "Device, network & VPN, WiFi panorama, speed test and FPS - all in one app."),
                     fontSize = 12.sp,
                     color = UpDim,
                     modifier = Modifier.padding(top = 8.dp)
@@ -312,21 +312,21 @@ fun UpdateScreen() {
                     .background(UpCard, RoundedCornerShape(16.dp))
                     .padding(18.dp)
             ) {
-                Text("AI 生成声明", fontSize = 12.sp, color = UpText)
+                Text(Lang.s("AI 生成声明", "AI disclosure"), fontSize = 12.sp, color = UpText)
                 Text(
                     "本项目包含大量由大语言模型生成的代码初稿，全部内容经过人工审核与重构；无法保证 AI 输出不存在第三方版权片段，使用者请自行评估风险。",
                     fontSize = 11.sp,
                     color = UpDim,
                     modifier = Modifier.padding(top = 4.dp)
                 )
-                Text("隐私说明", fontSize = 12.sp, color = UpText, modifier = Modifier.padding(top = 12.dp))
+                Text(Lang.s("隐私说明", "Privacy"), fontSize = 12.sp, color = UpText, modifier = Modifier.padding(top = 12.dp))
                 Text(
                     "本应用不收集、不上传任何设备信息。仅在查询公网 IP 时访问第三方接口（myip.ipip.net、ident.me），测速时访问 Cloudflare，检查更新时访问你填写的更新源。除此之外没有其他网络行为。",
                     fontSize = 11.sp,
                     color = UpDim,
                     modifier = Modifier.padding(top = 4.dp)
                 )
-                Text("免责声明", fontSize = 12.sp, color = UpText, modifier = Modifier.padding(top = 12.dp))
+                Text(Lang.s("免责声明", "Disclaimer"), fontSize = 12.sp, color = UpText, modifier = Modifier.padding(top = 12.dp))
                 Text(
                     "本软件按「现状」提供，不提供任何明示或暗示的担保，不保证无漏洞，不对使用过程中产生的任何直接或间接损失承担责任。",
                     fontSize = 11.sp,
