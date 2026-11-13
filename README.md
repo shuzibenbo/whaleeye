@@ -1,3 +1,5 @@
+<img src="docs/icon.png" width="96" align="left" hspace="16" vspace="4" />
+
 # 鲸眼 WhaleEye
 
 **一眼看穿你的手机与网络。**
