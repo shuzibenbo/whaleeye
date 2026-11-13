@@ -1,0 +1,12 @@
+{
+  "versionCode": 10,
+  "versionName": "0.8.1",
+  "apkUrl": "https://github.com/shuzibenbo/whaleeye/releases/download/v0.8.1/whaleeye-0.8.1-arm64.apk",
+  "mirrors": [
+    "https://ghproxy.net/https://github.com/shuzibenbo/whaleeye/releases/download/v0.8.1/whaleeye-0.8.1-arm64.apk",
+    "https://ghfast.top/https://github.com/shuzibenbo/whaleeye/releases/download/v0.8.1/whaleeye-0.8.1-arm64.apk"
+  ],
+  "sha256": "88864c3951bd3759a75f831135ddd27dc4dbc95d7644731cb3ac32d26b896cc5",
+  "changelog": "修复 Android 10 开 VPN 进网络页闪退；更新检查改为 5 路并发源；下载支持镜像；超时放宽",
+  "minSdk": 29
+}
