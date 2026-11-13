@@ -1,12 +1,12 @@
 {
-  "versionCode": 11,
-  "versionName": "0.9.0",
-  "apkUrl": "https://github.com/shuzibenbo/whaleeye/releases/download/v0.9.0/whaleeye-0.9.0-arm64.apk",
+  "versionCode": 12,
+  "versionName": "0.9.1",
+  "apkUrl": "https://github.com/shuzibenbo/whaleeye/releases/download/v0.9.1/whaleeye-0.9.1-arm64.apk",
   "mirrors": [
-    "https://ghproxy.net/https://github.com/shuzibenbo/whaleeye/releases/download/v0.9.0/whaleeye-0.9.0-arm64.apk",
-    "https://ghfast.top/https://github.com/shuzibenbo/whaleeye/releases/download/v0.9.0/whaleeye-0.9.0-arm64.apk"
+    "https://ghproxy.net/https://github.com/shuzibenbo/whaleeye/releases/download/v0.9.1/whaleeye-0.9.1-arm64.apk",
+    "https://ghfast.top/https://github.com/shuzibenbo/whaleeye/releases/download/v0.9.1/whaleeye-0.9.1-arm64.apk"
   ],
-  "sha256": "21e7f9f96743175d31a11eca8ac824b6e6eb62a6f022bdabc24bff7ee1847060",
-  "changelog": "0.9.0：全新应用图标（大肥鱼）；设置页支持中文/English 切换；界面文案双语化",
+  "sha256": "11973ed0b5e6142b930919d6d343489550ba7e6b423425d4ce9b1ad2634b58bf",
+  "changelog": "0.9.1：更新检查改为取所有源中版本号最高者（免疫 CDN 旧缓存）；新增 releases/latest 源；补全关于页与声明双语",
   "minSdk": 29
 }
