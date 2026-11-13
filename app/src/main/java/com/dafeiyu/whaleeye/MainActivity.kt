@@ -89,12 +89,12 @@ fun WhaleEyeApp() {
                     Tab(
                         selected = tab == 0,
                         onClick = { tab = 0 },
-                        text = { Text("设备", fontSize = 14.sp) }
+                        text = { Text(Lang.s("设备", "Device"), fontSize = 14.sp) }
                     )
                     Tab(
                         selected = tab == 1,
                         onClick = { tab = 1 },
-                        text = { Text("网络", fontSize = 14.sp) }
+                        text = { Text(Lang.s("网络", "Network"), fontSize = 14.sp) }
                     )
                     Tab(
                         selected = tab == 2,
@@ -104,17 +104,17 @@ fun WhaleEyeApp() {
                     Tab(
                         selected = tab == 3,
                         onClick = { tab = 3 },
-                        text = { Text("测速", fontSize = 14.sp) }
+                        text = { Text(Lang.s("测速", "Speed"), fontSize = 14.sp) }
                     )
                     Tab(
                         selected = tab == 4,
                         onClick = { tab = 4 },
-                        text = { Text("帧率", fontSize = 13.sp) }
+                        text = { Text(Lang.s("帧率", "FPS"), fontSize = 13.sp) }
                     )
                     Tab(
                         selected = tab == 5,
                         onClick = { tab = 5 },
-                        text = { Text("设置", fontSize = 13.sp) }
+                        text = { Text(Lang.s("设置", "Settings"), fontSize = 13.sp) }
                     )
                 }
                 when (tab) {
@@ -149,7 +149,7 @@ fun DeviceScreen() {
         },
         modifier = Modifier.fillMaxSize()
     ) {
-        InfoList(groups, "P1 · 设备信息")
+        InfoList(groups, Lang.s("P1 · 设备信息", "P1 · Device"))
     }
 }
 
@@ -259,7 +259,7 @@ fun NetworkScreen() {
         },
         modifier = Modifier.fillMaxSize()
     ) {
-        InfoList(groups + extra, "P2 · 网络与 IP")
+        InfoList(groups + extra, Lang.s("P2 · 网络与 IP", "P2 · Network & IP"))
     }
 }
 
@@ -313,7 +313,7 @@ fun InfoCard(items: List<InfoItem>) {
             ) {
                 if (item.label.isNotEmpty()) {
                     Text(
-                        text = item.label,
+                        text = Lang.label(item.label),
                         fontSize = 12.sp,
                         color = TextDim,
                         modifier = Modifier.width(94.dp)

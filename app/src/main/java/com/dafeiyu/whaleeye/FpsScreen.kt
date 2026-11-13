@@ -116,7 +116,7 @@ fun FpsScreen() {
         contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 6.dp, bottom = 40.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        item { ScreenHeader("P5 · 帧率") }
+        item { ScreenHeader(Lang.s("P5 · 帧率", "P5 · Frame Rate")) }
         item {
             Column(
                 modifier = Modifier
@@ -125,7 +125,7 @@ fun FpsScreen() {
                     .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("本 App 当前渲染帧率", fontSize = 12.sp, color = FpsDim)
+                Text(Lang.s("本 App 当前渲染帧率", "Current render frame rate"), fontSize = 12.sp, color = FpsDim)
                 Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.padding(top = 6.dp)) {
                     Text(
                         String.format(Locale.US, "%.0f", fps),
@@ -136,14 +136,14 @@ fun FpsScreen() {
                     Text(" FPS", fontSize = 16.sp, color = FpsDim, modifier = Modifier.padding(bottom = 12.dp))
                 }
                 Text(
-                    "由 Choreographer 逐帧统计，每 0.5 秒刷新一次",
+                    Lang.s("由 Choreographer 逐帧统计，每 0.5 秒刷新一次", "Measured per-frame via Choreographer, refreshed every 0.5 s"),
                     fontSize = 11.sp,
                     color = FpsDim,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
         }
-        item { GroupTitle("左上角悬浮显示") }
+        item { GroupTitle(Lang.s("左上角悬浮显示", "Top-left overlay")) }
         item {
             Column(
                 modifier = Modifier
@@ -152,12 +152,12 @@ fun FpsScreen() {
                     .padding(18.dp)
             ) {
                 Text(
-                    if (overlayOn) "悬浮窗已开启，切到别的 App 也能看到" else "开启后会在屏幕左上角常驻一个小胶囊",
+                    if (overlayOn) Lang.s("悬浮窗已开启，切到别的 App 也能看到", "Overlay is on - visible above other apps") else Lang.s("开启后会在屏幕左上角常驻一个小胶囊", "Adds a small pill at the top-left corner"),
                     fontSize = 13.sp,
                     color = FpsText
                 )
                 Text(
-                    "需要「显示在其他应用上层」权限；授权后回到这里会自动开启",
+                    Lang.s("需要「显示在其他应用上层」权限；授权后回到这里会自动开启", "Needs Draw-over-other-apps permission; it turns on automatically when you come back"),
                     fontSize = 11.sp,
                     color = FpsDim,
                     modifier = Modifier.padding(top = 6.dp)
@@ -170,14 +170,14 @@ fun FpsScreen() {
                     modifier = Modifier.padding(top = 14.dp)
                 ) {
                     Text(
-                        if (overlayOn) "关闭悬浮窗" else "开启悬浮窗",
+                        if (overlayOn) Lang.s("关闭悬浮窗", "Turn off overlay") else Lang.s("开启悬浮窗", "Turn on overlay"),
                         fontSize = 13.sp,
                         color = Color(0xFF12142A)
                     )
                 }
             }
         }
-        item { GroupTitle("说明") }
+        item { GroupTitle(Lang.s("说明", "Notes")) }
         item {
             InfoCard(
                 listOf(

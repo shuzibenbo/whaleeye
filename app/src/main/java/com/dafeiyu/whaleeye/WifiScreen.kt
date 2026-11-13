@@ -143,7 +143,7 @@ fun WifiScreen() {
             contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 6.dp, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            item { ScreenHeader("P3 · WiFi 全景") }
+            item { ScreenHeader(Lang.s("P3 · WiFi 全景", "P3 · WiFi Panorama")) }
             if (!granted) {
                 item { PermissionCard { launcher.launch(WifiInfoProvider.requiredPermissions()) } }
             } else {
@@ -152,11 +152,11 @@ fun WifiScreen() {
                     item(key = "c_" + g.title) { InfoCard(g.items) }
                 }
                 item(key = "t_scan") {
-                    GroupTitle("附近网络（" + aps.size + " 个，按信号排序）")
+                    GroupTitle(Lang.s("附近网络（" + aps.size + " 个，按信号排序）", "Nearby (" + aps.size + ", by signal)"))
                 }
                 if (aps.isEmpty()) {
                     item(key = "empty") {
-                        EmptyHint("暂未扫描到网络，下拉刷新试试（Android 限制每 2 分钟最多扫 4 次）")
+                        EmptyHint(Lang.s("暂未扫描到网络，下拉刷新试试（Android 限制每 2 分钟最多扫 4 次）", "No networks yet. Pull to refresh (Android limits 4 scans / 2 min)."))
                     }
                 } else {
                     items(aps.size) { idx ->
@@ -176,7 +176,7 @@ private fun PermissionCard(onRequest: () -> Unit) {
             .background(WifiCard, RoundedCornerShape(16.dp))
             .padding(18.dp)
     ) {
-        Text("需要 WiFi 权限", fontSize = 15.sp, fontWeight = FontWeight.Medium, color = WifiText)
+        Text(Lang.s("需要 WiFi 权限", "WiFi permission needed"), fontSize = 15.sp, fontWeight = FontWeight.Medium, color = WifiText)
         Text(
             "要读取频段、信道、周边热点，需要「附近的设备」和「位置信息」权限。数据只在本机显示，不会上传。",
             fontSize = 12.sp,
@@ -187,7 +187,7 @@ private fun PermissionCard(onRequest: () -> Unit) {
             onClick = onRequest,
             colors = ButtonDefaults.buttonColors(containerColor = WifiAccent)
         ) {
-            Text("授予权限", fontSize = 13.sp, color = Color(0xFF12142A))
+            Text(Lang.s("授予权限", "Grant"), fontSize = 13.sp, color = Color(0xFF12142A))
         }
     }
 }

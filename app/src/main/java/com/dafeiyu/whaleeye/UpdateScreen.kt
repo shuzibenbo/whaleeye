@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -93,8 +97,11 @@ fun UpdateScreen() {
 
     fun doDownload() {
         val target = info ?: return
-        if (target.apkUrl.isBlank()) {
-            message = "清单里没有 apkUrl"
+        val urls = mutableListOf<String>()
+        if (target.apkUrl.isNotBlank()) urls += target.apkUrl
+        urls += target.mirrors
+        if (urls.isEmpty()) {
+            message = "清单里没有下载地址"
             return
         }
         downloading = true
@@ -105,7 +112,7 @@ fun UpdateScreen() {
             dir.mkdirs()
             val dest = File(dir, "whaleeye-" + target.versionName + ".apk")
             if (dest.exists()) dest.delete()
-            val ok = UpdateChecker.download(target.apkUrl, dest) { p -> progress = p }
+            val ok = UpdateChecker.downloadAny(urls, dest) { p -> progress = p }
             if (!ok) {
                 downloading = false
                 message = "下载失败"
@@ -140,7 +147,7 @@ fun UpdateScreen() {
         contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 6.dp, bottom = 40.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        item { ScreenHeader("P6 · 设置与更新") }
+        item { ScreenHeader(Lang.s("P6 · 设置与更新", "P6 · Settings")) }
         item {
             InfoCard(
                 listOf(
@@ -149,7 +156,35 @@ fun UpdateScreen() {
                 )
             )
         }
-        item { GroupTitle("更新源") }
+        item { GroupTitle("Language") }
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(UpCard, RoundedCornerShape(16.dp))
+                    .padding(14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = { Lang.english = false },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (!Lang.english) UpAccent else Color(0xFF3A3F55)
+                    )
+                ) {
+                    Text("中文", fontSize = 13.sp, color = Color(0xFF12142A))
+                }
+                Spacer(Modifier.width(10.dp))
+                Button(
+                    onClick = { Lang.english = true },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (Lang.english) UpAccent else Color(0xFF3A3F55)
+                    )
+                ) {
+                    Text("English", fontSize = 13.sp, color = Color(0xFF12142A))
+                }
+            }
+        }
+        item { GroupTitle(Lang.s("更新源", "Update source")) }
         item {
             Column(
                 modifier = Modifier
@@ -240,7 +275,7 @@ fun UpdateScreen() {
                 }
             }
         }
-        item { GroupTitle("关于") }
+        item { GroupTitle(Lang.s("关于", "About")) }
         item {
             Column(
                 modifier = Modifier
@@ -269,7 +304,7 @@ fun UpdateScreen() {
                 )
             }
         }
-        item { GroupTitle("声明") }
+        item { GroupTitle(Lang.s("声明", "Notices")) }
         item {
             Column(
                 modifier = Modifier

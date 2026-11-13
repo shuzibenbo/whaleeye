@@ -1,6 +1,8 @@
 package com.dafeiyu.whaleeye.update
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.BufferedInputStream
@@ -14,6 +16,7 @@ data class UpdateInfo(
     val versionCode: Int,
     val versionName: String,
     val apkUrl: String,
+    val mirrors: List<String>,
     val sha256: String,
     val changelog: String,
     val minSdk: Int
@@ -21,24 +24,81 @@ data class UpdateInfo(
 
 object UpdateChecker {
 
-    private const val UA = "WhaleEye/0.8"
+    private const val UA = "WhaleEye/0.9"
 
-    suspend fun check(url: String): UpdateInfo? = withContext(Dispatchers.IO) {
-        val busted = if (url.contains("?")) url + "&t=" + System.currentTimeMillis() else url + "?t=" + System.currentTimeMillis()
-        val body = httpGet(busted) ?: return@withContext null
-        try {
-            val o = JSONObject(body)
+    /** 内置多源：任意一个能通就能检查更新（国内 raw 常被污染，所以并行抢答）。 */
+    private val BUILTIN_SOURCES = listOf(
+        "https://cdn.jsdelivr.net/gh/shuzibenbo/whaleeye@main/update.json",
+        "https://raw.githubusercontent.com/shuzibenbo/whaleeye/main/update.json",
+        "https://ghproxy.net/https://raw.githubusercontent.com/shuzibenbo/whaleeye/main/update.json",
+        "https://ghfast.top/https://raw.githubusercontent.com/shuzibenbo/whaleeye/main/update.json",
+        "https://api.github.com/repos/shuzibenbo/whaleeye/contents/update.json"
+    )
+
+    suspend fun check(userUrl: String): UpdateInfo? = coroutineScope {
+        val urls = mutableListOf<String>()
+        if (userUrl.isNotBlank()) urls += userUrl.trim()
+        urls += BUILTIN_SOURCES
+        val jobs = urls.map { u ->
+            async(Dispatchers.IO) {
+                runCatching {
+                    httpGet(bust(u))?.let { body -> parse(body) }
+                }.getOrNull()
+            }
+        }
+        var found: UpdateInfo? = null
+        for (j in jobs) {
+            val r = runCatching { j.await() }.getOrNull()
+            if (r != null) {
+                found = r
+                break
+            }
+        }
+        jobs.forEach { runCatching { it.cancel() } }
+        found
+    }
+
+    private fun parse(body: String): UpdateInfo? = try {
+        val o = JSONObject(body)
+        val vc = o.optInt("versionCode", 0)
+        if (vc <= 0) {
+            null
+        } else {
+            val mirrors = mutableListOf<String>()
+            val arr = o.optJSONArray("mirrors")
+            if (arr != null) {
+                for (i in 0 until arr.length()) {
+                    val s = arr.optString(i, "")
+                    if (s.isNotBlank()) mirrors += s
+                }
+            }
             UpdateInfo(
-                versionCode = o.optInt("versionCode", 0),
+                versionCode = vc,
                 versionName = o.optString("versionName", "?"),
                 apkUrl = o.optString("apkUrl", ""),
+                mirrors = mirrors,
                 sha256 = o.optString("sha256", "").lowercase(),
                 changelog = o.optString("changelog", ""),
                 minSdk = o.optInt("minSdk", 0)
             )
-        } catch (e: Exception) {
-            null
         }
+    } catch (t: Throwable) {
+        null
+    }
+
+    suspend fun downloadAny(
+        urls: List<String>,
+        dest: File,
+        onProgress: (Float) -> Unit
+    ): Boolean = withContext(Dispatchers.IO) {
+        for (u in urls) {
+            if (u.isBlank()) continue
+            val ok = download(u, dest, onProgress)
+            if (ok) return@withContext true
+            runCatching { if (dest.exists()) dest.delete() }
+            onProgress(0f)
+        }
+        false
     }
 
     suspend fun download(
@@ -50,10 +110,10 @@ object UpdateChecker {
         try {
             dest.parentFile?.mkdirs()
             conn = URL(url).openConnection() as HttpURLConnection
-            conn.connectTimeout = 10000
-            conn.readTimeout = 20000
-            conn.setRequestProperty("User-Agent", UA)
+            conn.connectTimeout = 15000
+            conn.readTimeout = 30000
             conn.instanceFollowRedirects = true
+            conn.setRequestProperty("User-Agent", UA)
             val code = conn.responseCode
             if (code !in 200..299) return@withContext false
             val total = conn.contentLengthLong
@@ -71,13 +131,10 @@ object UpdateChecker {
                 }
             }
             dest.exists() && dest.length() > 0
-        } catch (e: Exception) {
+        } catch (t: Throwable) {
             false
         } finally {
-            try {
-                conn?.disconnect()
-            } catch (e: Exception) {
-            }
+            runCatching { conn?.disconnect() }
         }
     }
 
@@ -92,28 +149,42 @@ object UpdateChecker {
             }
         }
         md.digest().joinToString("") { String.format("%02x", it) }
-    } catch (e: Exception) {
+    } catch (t: Throwable) {
         ""
+    }
+
+    private fun bust(url: String): String {
+        val sep = if (url.contains("?")) "&" else "?"
+        return url + sep + "t=" + System.currentTimeMillis()
     }
 
     private fun httpGet(url: String): String? {
         var conn: HttpURLConnection? = null
         return try {
             conn = URL(url).openConnection() as HttpURLConnection
-            conn.connectTimeout = 8000
-            conn.readTimeout = 8000
+            conn.connectTimeout = 6000
+            conn.readTimeout = 6000
             conn.instanceFollowRedirects = true
             conn.setRequestProperty("User-Agent", UA)
             conn.setRequestProperty("Cache-Control", "no-store")
             if (conn.responseCode !in 200..299) return null
-            conn.inputStream.bufferedReader().use { it.readText() }
-        } catch (e: Exception) {
+            val text = conn.inputStream.bufferedReader().use { it.readText() }
+            // GitHub API 的 contents 接口返回 base64 包装，解开
+            if (text.trimStart().startsWith("{\"name\"")) {
+                val o = JSONObject(text)
+                val b64 = o.optString("content", "")
+                if (b64.isNotBlank()) {
+                    String(android.util.Base64.decode(b64.replace("\n", ""), android.util.Base64.DEFAULT))
+                } else {
+                    text
+                }
+            } else {
+                text
+            }
+        } catch (t: Throwable) {
             null
         } finally {
-            try {
-                conn?.disconnect()
-            } catch (e: Exception) {
-            }
+            runCatching { conn?.disconnect() }
         }
     }
 }

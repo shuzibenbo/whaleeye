@@ -47,7 +47,7 @@ private val SpAccent = Color(0xFF4ADE80)
 fun SpeedScreen() {
     val scope = rememberCoroutineScope()
     var running by remember { mutableStateOf(false) }
-    var phase by remember { mutableStateOf("准备就绪") }
+    var phase by remember { mutableStateOf(Lang.s("准备就绪", "Ready")) }
     var mbps by remember { mutableFloatStateOf(0f) }
     var progress by remember { mutableFloatStateOf(0f) }
     var result by remember { mutableStateOf<SpeedResult?>(null) }
@@ -57,7 +57,7 @@ fun SpeedScreen() {
         if (running) {
             job?.cancel()
             running = false
-            phase = "已取消"
+            phase = Lang.s("已取消", "Cancelled")
             return
         }
         running = true
@@ -66,17 +66,17 @@ fun SpeedScreen() {
         progress = 0f
         job = scope.launch {
             try {
-                phase = "① 测量延迟…"
+                phase = Lang.s("① 测量延迟…", "1/3 Measuring latency...")
                 val lat = SpeedTestEngine.measureLatency(8)
                 progress = 0.15f
 
-                phase = "② 下载测试（最多 10 MB / 20 秒）…"
+                phase = Lang.s("② 下载测试（最多 10 MB / 20 秒）…", "2/3 Download (max 10 MB / 20 s)...")
                 val downPair = SpeedTestEngine.download(10L * 1024 * 1024) { s, p ->
                     mbps = s.toFloat()
                     progress = 0.15f + p * 0.5f
                 }
 
-                phase = "③ 上传测试（最多 4 MB / 15 秒）…"
+                phase = Lang.s("③ 上传测试（最多 4 MB / 15 秒）…", "3/3 Upload (max 4 MB / 15 s)...")
                 val upPair = SpeedTestEngine.upload(4 * 1024 * 1024) { s, p ->
                     mbps = s.toFloat()
                     progress = 0.65f + p * 0.35f
@@ -88,7 +88,7 @@ fun SpeedScreen() {
                     downPair.second, upPair.second
                 )
                 mbps = downPair.first.toFloat()
-                phase = "完成（大字为下载结果）"
+                phase = Lang.s("完成（大字为下载结果）", "Done (big number = download)")
                 progress = 1f
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
@@ -105,7 +105,7 @@ fun SpeedScreen() {
         contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 6.dp, bottom = 40.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        item { ScreenHeader("P4 · 网络测速") }
+        item { ScreenHeader(Lang.s("P4 · 网络测速", "P4 · Speed Test")) }
         item {
             Column(
                 modifier = Modifier
@@ -137,10 +137,10 @@ fun SpeedScreen() {
                     ),
                     modifier = Modifier.padding(top = 16.dp)
                 ) {
-                    Text(if (running) "停止" else "开始测速", fontSize = 14.sp, color = Color(0xFF12142A))
+                    Text(if (running) Lang.s("停止", "Stop") else Lang.s("开始测速", "Start"), fontSize = 14.sp, color = Color(0xFF12142A))
                 }
                 Text(
-                    "一次最多消耗 14 MB 流量（下载 10 + 上传 4），慢网会在时限内提前结束",
+                    Lang.s("一次最多消耗 14 MB 流量（下载 10 + 上传 4），慢网会在时限内提前结束", "Uses up to 14 MB (10 down + 4 up); slow networks end early."),
                     fontSize = 11.sp,
                     color = SpDim,
                     modifier = Modifier.padding(top = 10.dp)
@@ -148,7 +148,7 @@ fun SpeedScreen() {
             }
         }
         result?.let { r ->
-            item { GroupTitle("本次结果") }
+            item { GroupTitle(Lang.s("本次结果", "Result")) }
             item {
                 val rows = mutableListOf(
                     InfoItem("下载", String.format(Locale.US, "%.1f Mbps", r.downMbps)),
@@ -167,7 +167,7 @@ fun SpeedScreen() {
         item {
             Box(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
                 Text(
-                    "测速节点：Cloudflare（Anycast）。结果受当前 Wi-Fi/蜂窝、宿舍热点与 ISP 影响，仅供参考。",
+                    Lang.s("测速节点：Cloudflare（Anycast）。结果受当前 Wi-Fi/蜂窝、宿舍热点与 ISP 影响，仅供参考。", "Node: Cloudflare (Anycast). Results vary by network and ISP."),
                     fontSize = 11.sp,
                     color = SpDim
                 )
