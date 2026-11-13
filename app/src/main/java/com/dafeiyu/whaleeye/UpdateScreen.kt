@@ -38,8 +38,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-private const val REPO_URL = "https://github.com/GITHUB_USER/whaleeye"
-private const val DEVELOPER_NAME = "GITHUB_USER"
+private const val REPO_URL = "https://github.com/shuzibenbo/whaleeye"
+private const val DEVELOPER_NAME = "shuzibenbo"
 
 private val UpCard = Color(0xFF141A2C)
 private val UpText = Color(0xFFE6ECFA)
@@ -50,7 +50,7 @@ private val UpAccent = Color(0xFF9B8CFF)
 fun UpdateScreen() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var url by remember { mutableStateOf("") }
+    var url by remember { mutableStateOf("https://raw.githubusercontent.com/shuzibenbo/whaleeye/main/update.json") }
     var checking by remember { mutableStateOf(false) }
     var info by remember { mutableStateOf<UpdateInfo?>(null) }
     var message by remember { mutableStateOf("") }

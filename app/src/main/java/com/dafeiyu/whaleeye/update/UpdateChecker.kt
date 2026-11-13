@@ -24,7 +24,8 @@ object UpdateChecker {
     private const val UA = "WhaleEye/0.8"
 
     suspend fun check(url: String): UpdateInfo? = withContext(Dispatchers.IO) {
-        val body = httpGet(url) ?: return@withContext null
+        val busted = if (url.contains("?")) url + "&t=" + System.currentTimeMillis() else url + "?t=" + System.currentTimeMillis()
+        val body = httpGet(busted) ?: return@withContext null
         try {
             val o = JSONObject(body)
             UpdateInfo(

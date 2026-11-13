@@ -62,7 +62,7 @@
 需要：JDK 21、Android SDK（compileSdk 37）、Gradle 9.9.1
 
 ```bash
-git clone https://github.com/OWNER/whaleeye.git
+git clone https://github.com/shuzibenbo/whaleeye.git
 cd whaleeye
 echo "sdk.dir=/path/to/Android/Sdk" > local.properties
 ./gradlew assembleDebug
@@ -93,7 +93,7 @@ keyPassword=******
 
 ## 作者
 
-- GitHub：[@OWNER](https://github.com/OWNER)
+- GitHub：[@shuzibenbo](https://github.com/shuzibenbo)
 
 ---
 

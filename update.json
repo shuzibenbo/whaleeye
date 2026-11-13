@@ -1,8 +1,0 @@
-{
-  "versionCode": 9,
-  "versionName": "0.8.0",
-  "apkUrl": "https://github.com/shuzibenbo/whaleeye/releases/download/v0.8.0-beta/whaleeye-0.8.0-beta-arm64.apk",
-  "sha256": "1968b70a4efd7a63f699aacb60dbe31ff766273595a003e1be8e1de81624fbf3",
-  "changelog": "首个公开测试版：设备信息 / 网络与 VPN / WiFi 全景 / 测速 / 帧率悬浮 / 应用内更新",
-  "minSdk": 29
-}
